@@ -1,0 +1,86 @@
+{{extend '../layout/main.art'}} {{block 'title'}} Blog - Content Manager {{/block}} {{block 'style'}}
+<link rel="stylesheet" href="lib/bootstrap/css/bootstrap.min.css">
+<link rel="stylesheet" href="css/base.css"> {{/block}} {{block 'body'}}
+<!-- 头部 -->
+{{include '../layout/header.art'}}
+<!-- /头部 -->
+<!-- 主体内容 -->
+<div class="content">
+    <!-- 侧边栏 -->
+    {{include '../layout/aside.art'}}
+    <!-- 侧边栏 -->
+    <div class="main">
+        <!-- 分类标题 -->
+        <div class="title">
+            <h4>用户ID：{{@userInfo._id}}</h4>
+        </div>
+        <!-- /分类标题 -->
+        <form class="form-container" action={{link}} method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label>标题</label>
+                <input type="text" name="title" class="form-control" placeholder="请输入文章标题" value={{article&&article.title}}>
+            </div>
+            <div class="form-group">
+                <label>作者</label>
+                <input type="text" name="author" class="form-control" readonly value={{@userInfo._id}}>
+            </div>
+            <div class="form-group">
+                <label>发布时间</label>
+                <input type="date" name="publish" class="form-control" id="date" value="article&&article.publish">
+            </div>
+
+            <div class="form-group">
+                <label for="exampleInputFile">文章封面</label>
+                <input type="file" name="cover" id="addFileBtn">
+                <div class="thumbnail-waper">
+                    <img class="img-thumbnail" id="thumbnail" {{if article}}src={{article&&article.cover[0]}} style="height:260px" {{else}}style="display:none" {{/if}}>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>内容</label>
+                <textarea name="content" class="form-control" id="editor">{{article&&article.content[0]}}</textarea>
+            </div>
+            <div class="buttons">
+                <input type="submit" class="btn btn-primary">
+            </div>
+        </form>
+
+    </div>
+</div>
+<!-- /主体内容 -->
+{{/block}} {{block 'script'}}
+<script src="lib/jquery/dist/jquery.min.js"></script>
+<script src="lib/bootstrap/js/bootstrap.min.js"></script>
+<script src="lib/ckeditor5/ckeditor.js"></script>
+<script type="text/javascript">
+    let editor;
+
+    ClassicEditor
+        .create(document.querySelector('#editor'))
+        .then(newEditor => {
+            editor = newEditor;
+        })
+        .catch(error => {
+            console.error(error);
+        });
+
+    // 获取数据
+    // const editorData = editor.getData();
+</script>
+<script>
+    $('#addFileBtn').on('change', function() {
+        const reader = new FileReader();
+        reader.readAsDataURL(this.files[0]);
+        reader.onload = function(e) {
+            $('#thumbnail').attr('src', e.target.result).show().height('260px');
+        }
+    });
+    const today = new Date();
+    let year = today.getFullYear();
+    let month = today.getMonth() + 1;
+    month = month < 10 ? '0' + month : month;
+    let date = today.getDate();
+    date = date < 10 ? '0' + date : date;
+    $('#date').val(year + '-' + month + '-' + date);
+</script>
+{{/block}}

@@ -1,0 +1,18 @@
+{{extend '../layout/main.art'}} 
+{{block 'style'}}
+<link rel="stylesheet" href="/admin/lib/bootstrap/css/bootstrap.min.css">
+{{/block}} 
+{{block 'body'}}
+<div class="alert alert-danger " style="text-align:center ">{{msg}} 页面将在<b id="time">5</b>秒后进行跳转</div>
+{{/block}} 
+{{block 'script'}}
+<script src="/admin/lib/jquery/dist/jquery.min.js "></script>
+<script>
+    const timer = setInterval(() => {
+        $("#time").text($("#time").text() - 1);
+    }, 1000);
+    setTimeout(() => {
+        location.href = 'login';
+    }, 5000);
+</script>
+{{/block}}
